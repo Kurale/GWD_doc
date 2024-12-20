@@ -159,10 +159,72 @@
   </script>
 </svg>
 </div>
-  <div class="gwd-div-xfqg"></div>
+  <div class="gwd-div-xfqg"><svg id="_Слой_2" data-name="Слой 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 874.46427 874.53179">
+  <g id="Piataia">
+    <g id="Piat_1">
+    <path d="m599.26958,53.27014C540.72808,19.6969,472.88836.5,400.56408.5c-74.4165,0-144.08496,20.32397-203.76221,55.72021l203.76221,344.27979L599.26958,53.27014Z" fill="#3C4A79" stroke="#F6D98F" stroke-miterlimit="10" stroke-width="5"/>
+    <path d="m800.62671,398.96909c-.19547-67.48505-17.49033-135.83442-53.65247-198.46909-37.20825-64.44658-89.64356-114.61925-150.13623-148.60314l-196.27394,348.60314,400.06263-1.53091Z" fill="#3C4A79" stroke="#F6D98F" stroke-miterlimit="10" stroke-width="5"/>
+    <path d="m601.9212,746.19894c58.34603-33.91181,108.8909-83.06428,145.05304-145.69894,37.20825-64.44658,54.4414-134.94322,53.62598-204.32336l-400.03614,4.32336,201.35713,345.69894Z" fill="#3C4A79" stroke="#F6D98F" stroke-miterlimit="10" stroke-width="5"/>
+    <path d="m201.85857,747.72986c58.5415,33.57324,126.38123,52.77014,198.70551,52.77014,74.4165,0,144.08496-20.32397,203.76221-55.72021l-203.76221-344.27979-198.70551,347.22986Z" fill="#3C4A79" stroke="#F6D98F" stroke-miterlimit="10" stroke-width="5"/>
+    <path d="m.50144,402.03091c.19547,67.48505,17.49033,135.83442,53.65247,198.46909,37.20825,64.44658,89.64356,114.61925,150.13623,148.60314l196.27394-348.60314L.50144,402.03091Z" fill="#3C4A79" stroke="#F6D98F" stroke-miterlimit="10" stroke-width="5"/>
+    <path d="m199.20695,54.80106c-58.34603,33.91181-108.8909,83.06428-145.05304,145.69894C16.94566,264.94658-.28749,335.44322.52793,404.82336l400.03614-4.32336L199.20695,54.80106Z" fill="#3C4A79" stroke="#F6D98F" stroke-miterlimit="10" stroke-width="5"/>
+    </g>
+    <!-- Числитель -->
+    <text id="numerator" transform="translate(971.78268 190.61706)" font-family="MyriadPro-Regular, 'Myriad Pro'" font-size="107.54919" fill="#000">
+      <tspan x="0" y="0">6</tspan>
+    </text>
+    <!-- Знаменатель -->
+    <text transform="translate(974.00925 294.03601)" font-family="MyriadPro-Regular, 'Myriad Pro'" font-size="107.54919" fill="#000">
+      <tspan x="0" y="0">6</tspan>
+    </text>
+    <line x1="950.23636" y1="207.85329" x2="1046.1145" y2="207.85329" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width="5.66929"/>
+  </g>
+  <script type="text/javascript">
+    <![CDATA[
+      // Функция для изменения цвета при клике
+      function toggleColor(evt) {
+        const target = evt.target;
+        if (target.tagName === 'path') {
+          const currentColor = target.getAttribute('fill');
+          const originalColor = target.dataset.originalColor || currentColor;
+
+          if (currentColor === '#FFFFFF') {
+            target.setAttribute('fill', originalColor); // Возвращаем исходный цвет
+          } else {
+            target.dataset.originalColor = originalColor; // Сохраняем оригинальный цвет
+            target.setAttribute('fill', '#FFFFFF'); // Меняем на белый
+          }
+          updateNumerator(); // Обновляем числитель
+        }
+      }
+
+      // Функция для подсчёта не белых сегментов
+      function updateNumerator() {
+        const paths = document.querySelectorAll('path');
+        let count = 0;
+
+        paths.forEach((path) => {
+          if (path.getAttribute('fill') !== '#FFFFFF') {
+            count++;
+          }
+        });
+
+        // Обновляем текст числителя
+        const numeratorText = document.getElementById('numerator');
+        numeratorText.textContent = count;
+      }
+
+      // Привязка события клика к SVG
+      document.addEventListener('DOMContentLoaded', function () {
+        const svg = document.getElementById('_Слой_2');
+        svg.addEventListener('click', toggleColor);
+      });
+    ]]>
+  </script>
+</svg></div>
   <div class="gwd-div-6j3f"></div>
 
-  <img src="assets/Shestoi_2.svg" class="gwd-img-wqx7 gwd-img-8ozo">
+ 
   <img src="assets/Treti_1.svg" class="gwd-img-y38x gwd-img-6cvc">
 </body>
 
