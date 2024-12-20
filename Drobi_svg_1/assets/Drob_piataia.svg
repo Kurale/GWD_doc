@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="_Слой_2" data-name="Слой 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 646.1145 461.97826">
+  <g id="Piataia">
+    <g id="Piat_1">
+      <path d="m461.47826,230.98913c0-25.01266-3.98629-49.0938-11.35473-71.64531l-219.1344,72.22604,135.69956,185.74749c57.45614-41.91603,94.78957-109.76222,94.78957-186.32821Z" 
+            fill="#e8a93f" stroke="#000" stroke-miterlimit="10" data-original-color="#e8a93f"/>
+      <path d="m450.12353,159.34382C419.99208,67.12513,333.27209.5,230.98913.5v231.06986l219.1344-72.22604Z" 
+            fill="#e8a93f" stroke="#000" stroke-miterlimit="10" data-original-color="#e8a93f"/>
+      <path d="m230.98913.5C128.70617.5,41.98618,67.12513,11.85472,159.34382l219.13441,72.22604V.5Z" 
+            fill="#e8a93f" stroke="#000" stroke-miterlimit="10" data-original-color="#e8a93f"/>
+      <path d="m11.85472,159.34382C4.48629,181.89533.5,205.97647.5,230.98913c0,76.56599,37.33343,144.41219,94.78957,186.32821l135.69956-185.74749L11.85472,159.34382Z" 
+            fill="#e8a93f" stroke="#000" stroke-miterlimit="10" data-original-color="#e8a93f"/>
+      <path d="m95.28957,417.31734c38.0682,27.77194,84.96994,44.16092,135.69956,44.16092s97.63136-16.38897,135.69956-44.16092l-135.69956-185.74749-135.69956,185.74749Z" 
+            fill="#e8a93f" stroke="#000" stroke-miterlimit="10" data-original-color="#e8a93f"/>
+    </g>
+    <!-- Числитель -->
+    <text id="numerator" transform="translate(571.78268 190.61706)" font-family="MyriadPro-Regular, 'Myriad Pro'" font-size="97.54919" fill="#000">
+      <tspan x="0" y="0">5</tspan>
+    </text>
+    <!-- Знаменатель -->
+    <text transform="translate(574.00925 294.03601)" font-family="MyriadPro-Regular, 'Myriad Pro'" font-size="97.54919" fill="#000">
+      <tspan x="0" y="0">5</tspan>
+    </text>
+    <line x1="550.23636" y1="207.85329" x2="646.1145" y2="207.85329" fill="none" stroke="#000" stroke-miterlimit="10" stroke-width="5.66929"/>
+  </g>
+  <script type="text/javascript">
+    <![CDATA[
+      // Функция для изменения цвета при клике
+      function toggleColor(evt) {
+        const target = evt.target;
+        if (target.tagName === 'path') {
+          const currentColor = target.getAttribute('fill');
+          const originalColor = target.dataset.originalColor || currentColor;
+
+          if (currentColor === '#FFFFFF') {
+            target.setAttribute('fill', originalColor); // Возвращаем исходный цвет
+          } else {
+            target.dataset.originalColor = originalColor; // Сохраняем оригинальный цвет
+            target.setAttribute('fill', '#FFFFFF'); // Меняем на белый
+          }
+          updateNumerator(); // Обновляем числитель
+        }
+      }
+
+      // Функция для подсчёта не белых сегментов
+      function updateNumerator() {
+        const paths = document.querySelectorAll('path');
+        let count = 0;
+
+        paths.forEach((path) => {
+          if (path.getAttribute('fill') !== '#FFFFFF') {
+            count++;
+          }
+        });
+
+        // Обновляем текст числителя
+        const numeratorText = document.getElementById('numerator');
+        numeratorText.textContent = count;
+      }
+
+      // Привязка события клика к SVG
+      document.addEventListener('DOMContentLoaded', function () {
+        const svg = document.getElementById('_Слой_2');
+        svg.addEventListener('click', toggleColor);
+      });
+    ]]>
+  </script>
+</svg>
