@@ -6,4 +6,5 @@ gwd_tut
 <a href="https://kurale.github.io/GWD_doc/Drobi_svg_1/Drobi_svg_1.html">Тест</a>
 <a href="https://kurale.github.io/GWD_doc/Elka_2/index.html">Ёлка состав числа 9</a>
 <a href="https://kurale.github.io/GWD_doc/Test_D&D_Ispr (Опубликован)/index.html">Ispring_test_1</a>
+<a href="https://kurale.github.io/GWD_doc/DiktantMat/start.html">MatDikt</a>
 
