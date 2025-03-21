@@ -1,0 +1,61 @@
+/* Стили для упражнений */
+.verb-ending {
+    margin: 0 2px;
+    display: inline-block !important;
+    width: auto !important;
+    min-width: 80px !important;
+    vertical-align: baseline !important;
+    color: #212529 !important; /* Черный текст для выпадающих списков */
+    background-color: #f8f9fa !important; /* Светлый фон для выпадающих списков */
+}
+
+.feedback-animation {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Стили для заголовков и навигации */
+#collection-title {
+    font-weight: bold;
+}
+
+#exercise-counter {
+    font-weight: 500;
+}
+
+/* Стили для адаптивности на мобильных устройствах */
+@media (max-width: 768px) {
+    .verb-ending {
+        min-width: 70px !important;
+        margin: 2px 0;
+    }
+    
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .d-flex.justify-content-between button {
+        width: 100%;
+    }
+}
+
+/* Улучшение стилей для успешных/неуспешных ответов */
+.verb-ending.is-valid {
+    border-color: var(--bs-success) !important;
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-success-rgb), 0.25) !important;
+}
+
+.verb-ending.is-invalid {
+    border-color: var(--bs-danger) !important;
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-danger-rgb), 0.25) !important;
+}
+
+/* Стили для карточки с упражнением */
+.card.bg-light .card-body {
+    color: #f8f9fa;
+}

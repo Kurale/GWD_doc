@@ -1,0 +1,322 @@
+{
+  "basic_verbs": {
+    "title": "Базовые глаголы",
+    "description": "Упражнения на спряжение основных глаголов русского языка в настоящем времени.",
+    "level": "Начальный",
+    "language": "Русский",
+    "exercises": [
+      {
+        "id": 1,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Я "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "чита",
+            "options": ["ю", "ешь", "ет", "ем", "ете", "ют"],
+            "correctEnding": "ю"
+          },
+          {
+            "type": "text",
+            "content": " книгу каждый вечер."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Ты "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "говор",
+            "options": ["ю", "ишь", "ит", "им", "ите", "ят"],
+            "correctEnding": "ишь"
+          },
+          {
+            "type": "text",
+            "content": " по-русски очень хорошо."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Он "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "работа",
+            "options": ["ю", "ешь", "ет", "ем", "ете", "ют"],
+            "correctEnding": "ет"
+          },
+          {
+            "type": "text",
+            "content": " в большой компании."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Мы "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "слуша",
+            "options": ["ю", "ешь", "ет", "ем", "ете", "ют"],
+            "correctEnding": "ем"
+          },
+          {
+            "type": "text",
+            "content": " музыку в машине."
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Вы "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "смотр",
+            "options": ["ю", "ишь", "ит", "им", "ите", "ят"],
+            "correctEnding": "ите"
+          },
+          {
+            "type": "text",
+            "content": " телевизор по вечерам?"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Они "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "игра",
+            "options": ["ю", "ешь", "ет", "ем", "ете", "ют"],
+            "correctEnding": "ют"
+          },
+          {
+            "type": "text",
+            "content": " в футбол каждую субботу."
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Я не "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "пон",
+            "options": ["имаю", "имаешь", "имает", "имаем", "имаете", "имают"],
+            "correctEnding": "имаю"
+          },
+          {
+            "type": "text",
+            "content": " этот вопрос."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Мария "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "люб",
+            "options": ["лю", "ишь", "ит", "им", "ите", "ят"],
+            "correctEnding": "ит"
+          },
+          {
+            "type": "text",
+            "content": " классическую музыку."
+          }
+        ]
+      }
+    ]
+  },
+  "advanced_verbs": {
+    "title": "Продвинутые глаголы",
+    "description": "Упражнения на спряжение глаголов с чередованием, нестандартным спряжением и глаголов движения.",
+    "level": "Продвинутый",
+    "language": "Русский",
+    "exercises": [
+      {
+        "id": 1,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Я "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "пек",
+            "options": ["у", "ёшь", "ёт", "ём", "ёте", "ут"],
+            "correctEnding": "у"
+          },
+          {
+            "type": "text",
+            "content": " торт на день рождения."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Ты "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "бер",
+            "options": ["у", "ёшь", "ёт", "ём", "ёте", "ут"],
+            "correctEnding": "ёшь"
+          },
+          {
+            "type": "text",
+            "content": " с собой зонт?"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Каждое утро он "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "бег",
+            "options": ["у", "аешь", "ает", "аем", "аете", "ают"],
+            "correctEnding": "ает"
+          },
+          {
+            "type": "text",
+            "content": " в парке."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Мы "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "пойд",
+            "options": ["у", "ёшь", "ёт", "ём", "ёте", "ут"],
+            "correctEnding": "ём"
+          },
+          {
+            "type": "text",
+            "content": " в кино завтра вечером."
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Вы "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "жг",
+            "options": ["у", "ёшь", "ёт", "ём", "ёте", "ут"],
+            "correctEnding": "ёте"
+          },
+          {
+            "type": "text",
+            "content": " старые листья в саду?"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Они "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "плыв",
+            "options": ["у", "ёшь", "ёт", "ём", "ёте", "ут"],
+            "correctEnding": "ут"
+          },
+          {
+            "type": "text",
+            "content": " очень быстро."
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Я "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "дам",
+            "options": ["", "ь", "ст", "дим", "дите", "дут"],
+            "correctEnding": ""
+          },
+          {
+            "type": "text",
+            "content": " тебе свою книгу, если ты вернёшь мне её через неделю."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "segments": [
+          {
+            "type": "text",
+            "content": "Ты "
+          },
+          {
+            "type": "verb",
+            "verbRoot": "хоч",
+            "options": ["у", "ешь", "ет", "ем", "ете", "ут"],
+            "correctEnding": "ешь"
+          },
+          {
+            "type": "text",
+            "content": " поехать в горы этим летом?"
+          }
+        ]
+      }
+    ]
+  }
+}
