@@ -9,4 +9,7 @@ gwd_tut
 <a href="https://kurale.github.io/GWD_doc/Okonchania/index.html">OkonchaniaVtorLitsoEdChislo</a>
 <a href="https://kurale.github.io/GWD_doc/Okonchania/index_1L_mn_ch.html">Okonchania_1litso_mn_ch</a>
 <a href="https://kurale.github.io/GWD_doc/Okonchania/index_2L_1ch.html">Okonchania_2litso_ed_ch</a>
-<a href="https://kurale.github.io/GWD_doc/Okonchania/index_2L_1ch.html">Okonchania_2litso_ed_ch</a>
+<a href="https://kurale.github.io/GWD_doc/RussianLanguage/index.html">Упражнения по русскому</a>
+
+
+
