@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>КотПитание — Баланс рациона</title>
+  <style>
+    :root {
+      --bg: #f4fbff;
+      --panel: #ffffff;
+      --primary: #63b3ed;
+      --primary-dark: #2b6cb0;
+      --accent: #7bdcb5;
+      --text: #24445e;
+      --muted: #63829b;
+      --danger: #e96b6b;
+      --warn: #edb35f;
+      --ok: #4caf82;
+      --shadow: 0 8px 24px rgba(43, 108, 176, 0.12);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(180deg, #ecf8ff 0%, #f8fffc 45%, #f7fbff 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 74px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #d9ebf6;
+      padding: 12px 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    main { padding: 12px; max-width: 960px; margin: 0 auto; }
+
+    .card {
+      background: var(--panel);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+      font-size: 1.02rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .subtle { color: var(--muted); font-size: 0.9rem; }
+
+    .grid {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+
+    label { font-size: 0.85rem; color: #365f7d; }
+    input, select, textarea, button {
+      width: 100%;
+      border: 1px solid #cce3f4;
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+
+    textarea { min-height: 68px; resize: vertical; }
+
+    button {
+      background: linear-gradient(180deg, #84c6f3, #57a5dd);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.06s ease, opacity 0.15s ease;
+    }
+
+    button:active { transform: translateY(1px) scale(0.995); }
+    button.secondary { background: linear-gradient(180deg, #9adfc1, #66c091); }
+    button.ghost { background: #eef7ff; color: #2e6288; border: 1px solid #cde4f5; }
+
+    .row { display: flex; gap: 8px; align-items: center; }
+    .row > * { flex: 1; }
+
+    .kpi {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 8px;
+      text-align: center;
+    }
+
+    .pill {
+      background: #ecf7ff;
+      border: 1px solid #cde7fa;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 0.82rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .progress-wrap {
+      margin-top: 8px;
+      background: #ecf6ff;
+      border-radius: 999px;
+      height: 12px;
+      overflow: hidden;
+      border: 1px solid #cfe4f6;
+    }
+
+    .progress { height: 100%; width: 0%; background: linear-gradient(90deg, #63b3ed, #7bdcb5); }
+
+    .alert {
+      padding: 8px 10px;
+      border-radius: 10px;
+      margin: 6px 0;
+      font-size: 0.9rem;
+      border: 1px solid transparent;
+    }
+
+    .alert.ok { background: #e9fbf2; border-color: #c5efda; color: #217a52; }
+    .alert.warn { background: #fff7ea; border-color: #f2deb7; color: #8a6226; }
+    .alert.danger { background: #ffefef; border-color: #f3c5c5; color: #8f3e3e; }
+
+    .tab { display: none; }
+    .tab.active { display: block; }
+
+    nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255,255,255,0.97);
+      border-top: 1px solid #cfe4f5;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      padding: 8px;
+    }
+
+    .nav-btn {
+      border-radius: 12px;
+      border: 1px solid #d5e8f7;
+      background: #f2f9ff;
+      color: #2f678c;
+      padding: 8px 4px;
+      font-size: 0.8rem;
+    }
+
+    .nav-btn.active { background: #6eb8eb; color: #fff; border-color: #6eb8eb; }
+
+    .food-list { max-height: 160px; overflow: auto; border: 1px solid #d5e8f6; border-radius: 12px; padding: 6px; }
+    .food-item { padding: 8px; border-radius: 10px; border: 1px solid #e6f2fb; margin-bottom: 6px; background: #fbfeff; }
+
+    .badge { display: inline-block; background: #e9f8f1; border: 1px solid #c9ecd9; border-radius: 999px; padding: 4px 8px; margin: 4px 4px 0 0; font-size: 0.8rem; }
+
+    canvas { width: 100%; background: #fcfeff; border-radius: 12px; border: 1px solid #d4e8f6; }
+
+    .tooltip {
+      border-bottom: 1px dashed #6ea8cf;
+      cursor: help;
+    }
+
+    dialog {
+      border: none;
+      border-radius: 14px;
+      max-width: 420px;
+      width: calc(100% - 24px);
+      box-shadow: var(--shadow);
+    }
+
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+      .kpi { grid-template-columns: 1fr 1fr; }
+      h1 { font-size: 1.03rem; }
+      body { padding-bottom: 84px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🐾 КотПитание — мобильный помощник по рациону</h1>
+  </header>
+
+  <main>
+    <section id="tab-home" class="tab active">
+      <div class="card">
+        <h2 class="section-title">🏠 Домой</h2>
+        <p class="subtle">Это приложение помогает подбирать и отслеживать <strong>сбалансированное</strong> питание кошек по принципам AAFCO. Напоминание: это не замена очной консультации ветеринара.</p>
+        <div id="home-summary"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">🎓 Советы диетолога</h2>
+        <div id="tips"></div>
+      </div>
+    </section>
+
+    <section id="tab-profile" class="tab">
+      <div class="card">
+        <h2 class="section-title">👤 Профиль кота (шаг 1/2)</h2>
+        <p class="subtle">Можно хранить несколько кошек. Все данные сохраняются офлайн в браузере (localStorage).</p>
+
+        <form id="profile-form" class="grid">
+          <div>
+            <label>Кличка</label>
+            <input name="name" required placeholder="Например, Мурка" />
+          </div>
+          <div>
+            <label>Возраст (месяцы)</label>
+            <input name="ageMonths" type="number" min="1" max="240" required />
+          </div>
+          <div>
+            <label>Вес (кг)</label>
+            <input name="weight" type="number" min="0.3" step="0.1" required />
+          </div>
+          <div>
+            <label>Порода</label>
+            <select name="breed">
+              <option>Домашняя короткошерстная</option>
+              <option>Мейн-кун</option>
+              <option>Британская короткошерстная</option>
+              <option>Сиамская</option>
+              <option>Сфинкс</option>
+              <option>Другая</option>
+            </select>
+          </div>
+          <div>
+            <label>Своя порода (если «Другая»)</label>
+            <input name="customBreed" placeholder="Введите породу" />
+          </div>
+          <div>
+            <label>Активность</label>
+            <select name="activity">
+              <option value="low">Низкая (домашний, спокойный)</option>
+              <option value="medium" selected>Средняя</option>
+              <option value="high">Высокая (много играет/гуляет)</option>
+            </select>
+          </div>
+          <div style="grid-column:1/-1">
+            <label>Заметки по здоровью (аллергии, почки и т.д.)</label>
+            <textarea name="healthNotes"></textarea>
+          </div>
+          <div class="row" style="grid-column:1/-1">
+            <button type="submit">💾 Сохранить профиль</button>
+            <button type="button" class="ghost" id="clear-profiles">🧹 Очистить всё</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">🐱 Список профилей</h2>
+        <div id="profile-list"></div>
+      </div>
+    </section>
+
+    <section id="tab-recommend" class="tab">
+      <div class="card">
+        <h2 class="section-title">🍽️ Рекомендации (шаг 2/2)</h2>
+        <div class="grid">
+          <div>
+            <label>Выберите кота</label>
+            <select id="rec-cat-select"></select>
+          </div>
+          <div>
+            <label>Тип кормления</label>
+            <select id="feeding-type">
+              <optgroup label="Строгий тип">
+                <option value="dry">Только сухой</option>
+                <option value="wet">Только влажный</option>
+                <option value="raw">Только RAW/BARF</option>
+                <option value="home">Только домашний</option>
+              </optgroup>
+              <optgroup label="Смешанный тип">
+                <option value="mix-wet-dry" selected>50% влажный + 50% сухой</option>
+                <option value="mix-wet-raw">70% влажный + 30% raw</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:8px">
+          <button id="generate-plan">🧠 Сгенерировать план</button>
+          <button id="why-protein" type="button" class="secondary">❓Почему много белка?</button>
+        </div>
+        <div id="recommendation"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">🔎 Поиск по базе кормов</h2>
+        <input id="food-search" placeholder="Введите название, тип или бренд" />
+        <div id="food-results" class="food-list" style="margin-top:8px"></div>
+      </div>
+    </section>
+
+    <section id="tab-track" class="tab">
+      <div class="card">
+        <h2 class="section-title">📝 Ежедневный трекер</h2>
+        <form id="log-form" class="grid">
+          <div>
+            <label>Кот</label>
+            <select id="log-cat" required></select>
+          </div>
+          <div>
+            <label>Корм</label>
+            <select id="log-food" required></select>
+          </div>
+          <div>
+            <label>Количество (г)</label>
+            <input id="log-grams" type="number" min="1" required />
+          </div>
+          <div>
+            <label>Время</label>
+            <input id="log-time" type="time" required />
+          </div>
+          <div style="grid-column:1/-1">
+            <button type="submit">➕ Добавить кормление</button>
+          </div>
+        </form>
+
+        <div id="daily-kpi" class="kpi" style="margin-top:10px"></div>
+        <div id="track-alerts"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">📚 Журнал кормлений</h2>
+        <div id="logs"></div>
+      </div>
+    </section>
+
+    <section id="tab-monitor" class="tab">
+      <div class="card">
+        <h2 class="section-title">📊 Мониторинг</h2>
+        <div class="grid">
+          <div>
+            <label>Кот</label>
+            <select id="monitor-cat"></select>
+          </div>
+          <div>
+            <label>Диапазон</label>
+            <select id="monitor-range">
+              <option value="7">7 дней</option>
+              <option value="30" selected>30 дней</option>
+            </select>
+          </div>
+        </div>
+        <canvas id="macro-chart" height="190"></canvas>
+        <canvas id="weight-chart" height="190" style="margin-top:8px"></canvas>
+        <div id="monitor-alerts"></div>
+
+        <div class="row" style="margin-top:8px">
+          <button id="export-json" class="ghost">⬇️ Экспорт JSON</button>
+          <button id="export-csv" class="ghost">⬇️ Экспорт CSV</button>
+          <button id="notif-btn">🔔 Напоминания</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">🏅 Геймификация</h2>
+        <p class="subtle">Бейджи за регулярный уход.</p>
+        <div id="badges"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav id="bottom-nav">
+    <button class="nav-btn active" data-tab="home">🏠 Домой</button>
+    <button class="nav-btn" data-tab="profile">👤 Профиль</button>
+    <button class="nav-btn" data-tab="recommend">🍽️ План</button>
+    <button class="nav-btn" data-tab="track">📝 Трекер</button>
+    <button class="nav-btn" data-tab="monitor">📊 Монитор</button>
+  </nav>
+
+  <dialog id="info-dialog">
+    <p id="dialog-text"></p>
+    <form method="dialog">
+      <button>Понятно</button>
+    </form>
+  </dialog>
+
+  <script>
+    // Комментарий: локальная база кормов нужна для offline-first режима и быстрой фильтрации на мобильных.
+    const FOODS = [
+      { id: 'w1', name: 'Royal Canin Kitten Wet', type: 'wet', kcal: 95, protein: 12, fat: 5, carbs: 3, water: 78 },
+      { id: 'w2', name: 'Purina Pro Plan Adult Wet', type: 'wet', kcal: 90, protein: 11, fat: 4, carbs: 4, water: 79 },
+      { id: 'd1', name: 'Farmina N&D Chicken Dry', type: 'dry', kcal: 380, protein: 42, fat: 20, carbs: 12, water: 8 },
+      { id: 'd2', name: 'Hill\'s Science Plan Adult Dry', type: 'dry', kcal: 360, protein: 34, fat: 16, carbs: 18, water: 8 },
+      { id: 'r1', name: 'Balanced Raw Turkey (commercial)', type: 'raw', kcal: 210, protein: 19, fat: 13, carbs: 2, water: 64 },
+      { id: 'h1', name: 'Vet-approved Homemade Chicken', type: 'home', kcal: 170, protein: 18, fat: 8, carbs: 5, water: 68 }
+    ];
+
+    const STORAGE_KEY = 'catNutritionSPA_v1';
+    const defaultState = { cats: [], logs: [], plans: {}, weights: {}, badges: {} };
+    const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || defaultState;
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    // Комментарий: формула RER (70 * kg^0.75) используется как научная основа, затем адаптируется под возраст/активность.
+    function calcDailyCalories(cat) {
+      const rer = 70 * Math.pow(cat.weight, 0.75);
+      const isKitten = cat.ageMonths < 12;
+      const activityFactor = cat.activity === 'low' ? 0.9 : cat.activity === 'high' ? 1.2 : 1;
+      let target = rer * activityFactor;
+      if (isKitten) target *= 1.7;
+      return Math.max(150, Math.min(250, Math.round(target)));
+    }
+
+    function ageLabel(ageMonths) {
+      return ageMonths < 12 ? 'котёнок' : ageMonths < 84 ? 'взрослый' : 'сеньор';
+    }
+
+    function renderProfiles() {
+      const list = document.getElementById('profile-list');
+      list.innerHTML = state.cats.length ? '' : '<p class="subtle">Пока нет профилей.</p>';
+      state.cats.forEach(cat => {
+        const div = document.createElement('div');
+        const cals = calcDailyCalories(cat);
+        div.className = 'food-item';
+        div.innerHTML = `
+          <strong>${cat.name}</strong> • ${ageLabel(cat.ageMonths)} • ${cat.weight} кг<br>
+          <span class="subtle">Порода: ${cat.breed} | Активность: ${cat.activity}</span><br>
+          <span class="pill" title="Расчётная суточная энергия">🔥 ${cals} ккал/сутки</span>
+          <span class="pill">💪 Мин. белок: ${cat.ageMonths < 12 ? '30%' : '26%+'}</span>
+        `;
+        list.appendChild(div);
+      });
+      syncCatSelects();
+      renderHome();
+    }
+
+    function syncCatSelects() {
+      const ids = ['rec-cat-select', 'log-cat', 'monitor-cat'];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        el.innerHTML = '';
+        state.cats.forEach(cat => {
+          const op = document.createElement('option');
+          op.value = cat.id;
+          op.textContent = `${cat.name} (${cat.weight} кг)`;
+          el.appendChild(op);
+        });
+      });
+      const foodSel = document.getElementById('log-food');
+      foodSel.innerHTML = '';
+      FOODS.forEach(f => {
+        const op = document.createElement('option');
+        op.value = f.id;
+        op.textContent = `${f.name} (${f.kcal} ккал/100г)`;
+        foodSel.appendChild(op);
+      });
+    }
+
+    function recommendationFor(cat, feedType) {
+      const targetKcal = calcDailyCalories(cat);
+      const findType = t => FOODS.find(f => f.type === t);
+      let lines = [];
+      let warnings = [];
+
+      if (feedType === 'dry') {
+        const food = findType('dry');
+        lines.push(`${Math.round(targetKcal / food.kcal * 100)} г ${food.name}`);
+        warnings.push('Сухой корм удобен, но контролируйте воду: цель ~50-60 мл/кг/сутки.');
+      }
+      if (feedType === 'wet') {
+        const food = findType('wet');
+        lines.push(`${Math.round(targetKcal / food.kcal * 100)} г ${food.name}`);
+        warnings.push('Влажный корм поддерживает гидратацию и обычно вкуснее.');
+      }
+      if (feedType === 'raw') {
+        const food = findType('raw');
+        lines.push(`${Math.round(targetKcal / food.kcal * 100)} г ${food.name}`);
+        warnings.push('RAW подходит не всем: риск патогенов и дисбаланса. Для ослабленных животных лучше избегать.');
+      }
+      if (feedType === 'home') {
+        const food = findType('home');
+        lines.push(`${Math.round(targetKcal / food.kcal * 100)} г ${food.name}`);
+        warnings.push('Домашний рацион только по вет-рецепту для покрытия таурина, витаминов A/D/E и минералов.');
+      }
+      if (feedType === 'mix-wet-dry') {
+        const wet = findType('wet');
+        const dry = findType('dry');
+        const wKcal = targetKcal * 0.5;
+        lines.push(`${Math.round(wKcal / wet.kcal * 100)} г ${wet.name}`);
+        lines.push(`${Math.round(wKcal / dry.kcal * 100)} г ${dry.name}`);
+      }
+      if (feedType === 'mix-wet-raw') {
+        const wet = findType('wet');
+        const raw = findType('raw');
+        lines.push(`${Math.round(targetKcal * 0.7 / wet.kcal * 100)} г ${wet.name}`);
+        lines.push(`${Math.round(targetKcal * 0.3 / raw.kcal * 100)} г ${raw.name}`);
+        warnings.push('Переходите постепенно 7-10 дней, ежедневно увеличивая долю нового корма.');
+      }
+
+      if (/почки|kidney/i.test(cat.healthNotes)) {
+        warnings.push('При заболеваниях почек нужен пониженный фосфор и персональный план с ветеринаром.');
+      }
+
+      return { targetKcal, lines, warnings };
+    }
+
+    function renderFoodSearch(filter = '') {
+      const box = document.getElementById('food-results');
+      const q = filter.trim().toLowerCase();
+      const foods = FOODS.filter(f => `${f.name} ${f.type}`.toLowerCase().includes(q));
+      box.innerHTML = foods.map(f => `
+        <div class="food-item">
+          <strong>${f.name}</strong> <span class="pill">${f.type}</span><br>
+          <span class="subtle">${f.kcal} ккал/100г • белок ${f.protein}% • жир ${f.fat}% • угл. ${f.carbs}% • вода ${f.water}%</span>
+        </div>
+      `).join('') || '<p class="subtle">Ничего не найдено.</p>';
+    }
+
+    function getLogsFor(catId, days = 1) {
+      const now = Date.now();
+      const from = now - days * 24 * 60 * 60 * 1000;
+      return state.logs.filter(l => l.catId === catId && new Date(l.ts).getTime() >= from);
+    }
+
+    function dailyTotals(catId) {
+      const logs = getLogsFor(catId, 1);
+      return logs.reduce((acc, l) => {
+        const f = FOODS.find(x => x.id === l.foodId);
+        const factor = l.grams / 100;
+        acc.kcal += f.kcal * factor;
+        acc.protein += f.protein * factor;
+        acc.fat += f.fat * factor;
+        acc.carbs += f.carbs * factor;
+        acc.water += f.water * factor;
+        return acc;
+      }, { kcal: 0, protein: 0, fat: 0, carbs: 0, water: 0 });
+    }
+
+    function renderTrack() {
+      const catId = document.getElementById('log-cat').value;
+      const box = document.getElementById('logs');
+      const logs = state.logs.filter(l => l.catId === catId).slice(-20).reverse();
+      box.innerHTML = logs.map(l => {
+        const f = FOODS.find(x => x.id === l.foodId);
+        return `<div class="food-item">${new Date(l.ts).toLocaleString('ru-RU')} — ${f.name}, ${l.grams} г (${Math.round(f.kcal*l.grams/100)} ккал)</div>`;
+      }).join('') || '<p class="subtle">Логов пока нет.</p>';
+
+      const cat = state.cats.find(c => c.id === catId);
+      if (!cat) return;
+      const t = dailyTotals(catId);
+      const target = calcDailyCalories(cat);
+      const proteinPct = t.protein && t.fat && t.carbs ? (t.protein / (t.protein + t.fat + t.carbs) * 100) : 0;
+
+      document.getElementById('daily-kpi').innerHTML = `
+        <div class="pill">🔥 ${Math.round(t.kcal)} / ${target} ккал</div>
+        <div class="pill">💧 ~${Math.round(t.water)} г воды из корма</div>
+        <div class="pill">🥩 белок ~${proteinPct.toFixed(1)}%</div>
+      `;
+
+      const alerts = [];
+      if (t.kcal > target * 1.1) alerts.push(['warn', 'Калорийность выше нормы: риск набора веса.']);
+      if (t.kcal < target * 0.8) alerts.push(['warn', 'Калорийность ниже нормы: проверьте аппетит и активность.']);
+      if (proteinPct && proteinPct < (cat.ageMonths < 12 ? 30 : 26)) alerts.push(['danger', 'Белок недостаточен — добавьте животный источник белка.']);
+      if ((t.carbs / Math.max(1, (t.protein+t.fat+t.carbs)) * 100) > 15) alerts.push(['warn', 'Углеводов слишком много (>15%).']);
+      if (!alerts.length) alerts.push(['ok', 'Отлично! Баланс сегодня близок к целевому.']);
+
+      document.getElementById('track-alerts').innerHTML = alerts.map(a => `<div class="alert ${a[0]}">${a[1]}</div>`).join('');
+
+      awardBadges(catId);
+    }
+
+    function awardBadges(catId) {
+      const dailyCount = getLogsFor(catId, 7).length;
+      const badgeSet = state.badges[catId] || [];
+      if (dailyCount >= 7 && !badgeSet.includes('7d')) badgeSet.push('7d');
+      if (dailyCount >= 21 && !badgeSet.includes('21logs')) badgeSet.push('21logs');
+      state.badges[catId] = badgeSet;
+      saveState();
+      const b = document.getElementById('badges');
+      b.innerHTML = badgeSet.length
+        ? badgeSet.map(x => `<span class="badge">${x === '7d' ? '📅 7 дней заботы' : '🏆 21 запись питания'}</span>`).join('')
+        : '<span class="subtle">Бейджей пока нет.</span>';
+    }
+
+    function drawPie(canvas, values, colors, labels) {
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.clientWidth * devicePixelRatio;
+      const h = canvas.height = 190 * devicePixelRatio;
+      ctx.clearRect(0,0,w,h);
+      const total = values.reduce((a,b)=>a+b,0) || 1;
+      let angle = -Math.PI/2;
+      values.forEach((v, i) => {
+        const slice = (v / total) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(w*0.25, h*0.5);
+        ctx.arc(w*0.25, h*0.5, Math.min(w,h)*0.22, angle, angle + slice);
+        ctx.closePath();
+        ctx.fillStyle = colors[i];
+        ctx.fill();
+        angle += slice;
+      });
+      ctx.fillStyle = '#355f7c';
+      ctx.font = `${13*devicePixelRatio}px sans-serif`;
+      labels.forEach((l, i) => {
+        ctx.fillStyle = colors[i];
+        ctx.fillRect(w*0.52, h*(0.28+i*0.14), 16*devicePixelRatio, 8*devicePixelRatio);
+        ctx.fillStyle = '#355f7c';
+        ctx.fillText(`${l}: ${Math.round(values[i])}%`, w*0.58, h*(0.31+i*0.14));
+      });
+    }
+
+    function drawWeight(canvas, cat, days) {
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.clientWidth * devicePixelRatio;
+      const h = canvas.height = 190 * devicePixelRatio;
+      ctx.clearRect(0,0,w,h);
+      const logs = (state.weights[cat.id] || []).filter(x => Date.now() - x.ts <= days * 86400000);
+      const data = logs.length ? logs : [{ ts: Date.now() - days*86400000, val: cat.weight }, { ts: Date.now(), val: cat.weight }];
+      const minW = Math.min(...data.map(d => d.val)) - 0.2;
+      const maxW = Math.max(...data.map(d => d.val)) + 0.2;
+      ctx.strokeStyle = '#7aaed1';
+      ctx.lineWidth = 2 * devicePixelRatio;
+      ctx.beginPath();
+      data.forEach((d, i) => {
+        const x = (i / Math.max(1, data.length - 1)) * (w*0.9) + w*0.05;
+        const y = h*0.85 - ((d.val-minW)/(maxW-minW || 1))*(h*0.65);
+        if (i === 0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+      ctx.fillStyle = '#355f7c';
+      ctx.font = `${12*devicePixelRatio}px sans-serif`;
+      ctx.fillText('Тренд веса (кг)', w*0.05, h*0.12);
+    }
+
+    function renderMonitor() {
+      const catId = document.getElementById('monitor-cat').value;
+      const range = Number(document.getElementById('monitor-range').value);
+      const cat = state.cats.find(c => c.id === catId);
+      if (!cat) return;
+      const logs = getLogsFor(catId, range);
+      const totals = logs.reduce((acc, l) => {
+        const f = FOODS.find(x => x.id === l.foodId);
+        const k = l.grams / 100;
+        acc.p += f.protein * k;
+        acc.f += f.fat * k;
+        acc.c += f.carbs * k;
+        acc.k += f.kcal * k;
+        return acc;
+      }, { p:0, f:0, c:0, k:0 });
+      const sum = totals.p + totals.f + totals.c || 1;
+      const p = totals.p / sum * 100;
+      const f = totals.f / sum * 100;
+      const c = totals.c / sum * 100;
+
+      drawPie(document.getElementById('macro-chart'), [p,f,c], ['#6aaee6','#7ad4a8','#f3c166'], ['Белок','Жир','Углеводы']);
+      drawWeight(document.getElementById('weight-chart'), cat, range);
+
+      const alerts = [];
+      if (p < (cat.ageMonths < 12 ? 30 : 26)) alerts.push(['danger', 'Белок ниже рекомендуемого уровня.']);
+      if (c > 15) alerts.push(['warn', 'Углеводы выше 10-15%.']);
+      if (totals.k / Math.max(1, range) > calcDailyCalories(cat) * 1.1) alerts.push(['warn', 'Средняя калорийность завышена.']);
+      if (!alerts.length) alerts.push(['ok', 'Мониторинг в норме. Продолжайте в том же духе!']);
+      document.getElementById('monitor-alerts').innerHTML = alerts.map(a => `<div class="alert ${a[0]}">${a[1]}</div>`).join('');
+      awardBadges(catId);
+    }
+
+    function renderHome() {
+      const sum = document.getElementById('home-summary');
+      if (!state.cats.length) {
+        sum.innerHTML = '<div class="alert warn">Сначала создайте профиль кота во вкладке «Профиль».</div>';
+        return;
+      }
+      const cards = state.cats.map(c => {
+        const target = calcDailyCalories(c);
+        const t = dailyTotals(c.id);
+        const pct = Math.min(140, (t.kcal/target)*100);
+        return `
+          <div class="card" style="margin:8px 0 0">
+            <strong>${c.name}</strong> <span class="subtle">(${ageLabel(c.ageMonths)})</span>
+            <div class="progress-wrap"><div class="progress" style="width:${pct}%"></div></div>
+            <div class="subtle">Сегодня: ${Math.round(t.kcal)} / ${target} ккал • ${Math.round(pct)}%</div>
+          </div>
+        `;
+      }).join('');
+      sum.innerHTML = cards;
+    }
+
+    function renderTips() {
+      const tips = [
+        'Кошки — облигатные хищники: нужен высокий животный белок и таурин.',
+        'Котят до 1 года кормите только кормом для котят: больше энергии и минералов.',
+        'Разделяйте суточный рацион на 2-4 приёма пищи.',
+        'Новые рационы вводите постепенно 7-10 дней.',
+        'Опасные продукты для кошек: лук, шоколад, виноград, ксилит.'
+      ];
+      document.getElementById('tips').innerHTML = tips.map(t => `<div class="food-item">💡 ${t}</div>`).join('');
+    }
+
+    function exportData(format) {
+      const data = { exportedAt: new Date().toISOString(), ...state };
+      let blob, name;
+      if (format === 'json') {
+        blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        name = 'cat_nutrition_logs.json';
+      } else {
+        const rows = ['catId,time,foodId,grams'];
+        state.logs.forEach(l => rows.push(`${l.catId},${new Date(l.ts).toISOString()},${l.foodId},${l.grams}`));
+        blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+        name = 'cat_nutrition_logs.csv';
+      }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function showDialog(text) {
+      document.getElementById('dialog-text').textContent = text;
+      document.getElementById('info-dialog').showModal();
+    }
+
+    function initEvents() {
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const tab = btn.dataset.tab;
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          document.getElementById(`tab-${tab}`).classList.add('active');
+          if (tab === 'track') renderTrack();
+          if (tab === 'monitor') renderMonitor();
+          if (tab === 'home') renderHome();
+        });
+      });
+
+      document.getElementById('profile-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const ageMonths = Number(fd.get('ageMonths'));
+        const weight = Number(fd.get('weight'));
+        if (ageMonths <= 0 || weight <= 0) return showDialog('Возраст и вес должны быть положительными.');
+
+        const breed = fd.get('breed') === 'Другая' ? (fd.get('customBreed') || 'Другая') : fd.get('breed');
+        const cat = {
+          id: crypto.randomUUID(),
+          name: fd.get('name').toString().trim(),
+          ageMonths,
+          weight,
+          breed,
+          activity: fd.get('activity'),
+          healthNotes: (fd.get('healthNotes') || '').toString()
+        };
+        state.cats.push(cat);
+        state.weights[cat.id] = [{ ts: Date.now(), val: weight }];
+        saveState();
+        e.target.reset();
+        renderProfiles();
+      });
+
+      document.getElementById('clear-profiles').addEventListener('click', () => {
+        if (!confirm('Удалить все профили и логи?')) return;
+        Object.assign(state, JSON.parse(JSON.stringify(defaultState)));
+        saveState();
+        renderProfiles();
+        renderTrack();
+        renderMonitor();
+      });
+
+      document.getElementById('generate-plan').addEventListener('click', () => {
+        const cat = state.cats.find(c => c.id === document.getElementById('rec-cat-select').value);
+        if (!cat) return showDialog('Сначала добавьте профиль кота.');
+        const type = document.getElementById('feeding-type').value;
+        const plan = recommendationFor(cat, type);
+        state.plans[cat.id] = { type, plan, ts: Date.now() };
+        saveState();
+
+        const tradeoff = {
+          dry: 'Плюс: удобно и бюджетно. Минус: низкая влажность.',
+          wet: 'Плюс: вода и вкус. Минус: выше стоимость.',
+          raw: 'Плюс: высокий белок. Минус: риски безопасности/баланса.',
+          home: 'Плюс: гибкость. Минус: легко допустить дефицит.',
+          'mix-wet-dry': 'Баланс: гидратация + удобство.',
+          'mix-wet-raw': 'Баланс: вкус + белок, но строгая гигиена.'
+        };
+
+        document.getElementById('recommendation').innerHTML = `
+          <div class="alert ok">Цель: <strong>${plan.targetKcal} ккал/сутки</strong>, 2-4 приёма пищи.</div>
+          <div class="food-item"><strong>Суточный план:</strong><br>${plan.lines.map(x => `• ${x}`).join('<br>')}</div>
+          <div class="food-item"><strong>Компромиссы:</strong> ${tradeoff[type]}</div>
+          ${plan.warnings.map(w => `<div class="alert warn">${w}</div>`).join('')}
+          <div class="alert danger">Важно: исключите опасные продукты человека (лук, шоколад и т.д.) и сверяйтесь с ветеринаром.</div>
+        `;
+      });
+
+      document.getElementById('why-protein').addEventListener('click', () => {
+        showDialog('Кошки хуже усваивают растительные источники аминокислот и нуждаются в таурине из животных продуктов. Поэтому белок в рационе должен быть высоким.');
+      });
+
+      document.getElementById('food-search').addEventListener('input', e => renderFoodSearch(e.target.value));
+
+      document.getElementById('log-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const catId = document.getElementById('log-cat').value;
+        const foodId = document.getElementById('log-food').value;
+        const grams = Number(document.getElementById('log-grams').value);
+        const time = document.getElementById('log-time').value;
+        if (!catId || !foodId || grams <= 0 || !time) return showDialog('Проверьте корректность данных логирования.');
+
+        const now = new Date();
+        const [hh, mm] = time.split(':').map(Number);
+        now.setHours(hh, mm, 0, 0);
+
+        state.logs.push({ catId, foodId, grams, ts: now.toISOString() });
+        saveState();
+        e.target.reset();
+        renderTrack();
+        renderHome();
+      });
+
+      document.getElementById('log-cat').addEventListener('change', renderTrack);
+      document.getElementById('monitor-cat').addEventListener('change', renderMonitor);
+      document.getElementById('monitor-range').addEventListener('change', renderMonitor);
+      document.getElementById('export-json').addEventListener('click', () => exportData('json'));
+      document.getElementById('export-csv').addEventListener('click', () => exportData('csv'));
+
+      document.getElementById('notif-btn').addEventListener('click', async () => {
+        if (!('Notification' in window)) return showDialog('Браузер не поддерживает уведомления.');
+        const perm = await Notification.requestPermission();
+        if (perm !== 'granted') return showDialog('Разрешение не выдано.');
+        new Notification('КотПитание', { body: 'Пора проверить миску и воду 🐾' });
+      });
+    }
+
+    function init() {
+      renderProfiles();
+      renderTips();
+      renderFoodSearch();
+      initEvents();
+      if (!navigator.onLine) {
+        showDialog('Вы офлайн. Приложение продолжает работать с локальными данными.');
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
