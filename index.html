@@ -451,7 +451,17 @@
       ctx.clip(fragment.path);
       const srcX = fragment.sx - fragment.padding;
       const srcY = fragment.sy - fragment.padding;
-      ctx.drawImage(boardCanvas, -srcX, -srcY);
+      // Рисуем фрагмент напрямую из исходного изображения,
+      // а не из boardCanvas (там уже вырезана дырка, из-за этого
+      // правильный кусок получался прозрачным).
+      const { dx, dy, drawW, drawH } = round.drawRect;
+      ctx.drawImage(
+        round.image,
+        dx - srcX,
+        dy - srcY,
+        drawW,
+        drawH
+      );
       ctx.restore();
 
       ctx.strokeStyle = 'rgba(255,255,255,.95)';
