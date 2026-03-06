@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arcadia World</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hud-strip">
+        <h1>Arcadia World</h1>
+        <p id="status-text">Загрузка...</p>
+      </header>
+      <canvas id="game-canvas" width="1280" height="720" aria-label="Игровой мир"></canvas>
+      <section class="controls">
+        <p><strong>Управление:</strong> WASD / стрелки — движение, E — взаимодействие, Q — переключение масштаба.</p>
+      </section>
+    </main>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
