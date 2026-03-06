@@ -3,7 +3,6 @@ export const GAME_CONFIG = {
     tileSize: 32,
     gravity: 0,
     friction: 0.85,
-    baseScale: 2,
     zoomLevels: [1.5, 2, 2.5],
   },
   player: {
@@ -20,6 +19,11 @@ export const GAME_CONFIG = {
     followDistance: 50,
     speed: 190,
     color: '#f4a261',
+  },
+  interaction: {
+    npcRange: 72,
+    portalPadding: 18,
+    portalCooldown: 0.45,
   },
   camera: {
     smoothing: 0.12,
