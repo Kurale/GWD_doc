@@ -1,0 +1,54 @@
+:root {
+  color-scheme: dark;
+  --bg: #11161f;
+  --panel: #1a2533;
+  --accent: #5bc0be;
+  --text: #e5eef8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, Segoe UI, system-ui, sans-serif;
+  background: radial-gradient(circle at top, #1f2a3b 0%, #0b0f15 68%);
+  color: var(--text);
+}
+
+.app-shell {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.hud-strip,
+.controls {
+  width: min(1280px, 100%);
+  background: color-mix(in srgb, var(--panel), #fff 4%);
+  border: 1px solid color-mix(in srgb, var(--panel), #fff 14%);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+}
+
+.hud-strip h1 {
+  margin: 0;
+  color: var(--accent);
+  font-size: 1.2rem;
+}
+
+.hud-strip p,
+.controls p {
+  margin: 0.35rem 0 0;
+}
+
+#game-canvas {
+  width: min(1280px, 100%);
+  border-radius: 12px;
+  border: 2px solid color-mix(in srgb, var(--accent), #fff 20%);
+  image-rendering: pixelated;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
