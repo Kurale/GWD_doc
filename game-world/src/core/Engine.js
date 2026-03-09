@@ -3,6 +3,7 @@ import { Player } from '../entities/Player.js';
 import { Camera } from './Camera.js';
 import { GameLoop } from './GameLoop.js';
 import { InputManager } from './InputManager.js';
+import { AssetManager } from './AssetManager.js';
 import { PhysicsSystem } from '../systems/PhysicsSystem.js';
 import { LevelManager } from '../systems/LevelManager.js';
 import { UISystem } from '../systems/UISystem.js';
@@ -14,6 +15,7 @@ export class Engine {
     this.ctx = canvas.getContext('2d');
     this.ctx.imageSmoothingEnabled = false;
 
+    this.assets = new AssetManager();
     this.input = new InputManager();
     this.physics = new PhysicsSystem({
       gravity: GAME_CONFIG.world.gravity,
@@ -46,6 +48,7 @@ export class Engine {
   }
 
   async init() {
+    await this.assets.preload();
     await this.loadLevel('level-1');
     this.loop.start();
   }
@@ -59,7 +62,7 @@ export class Engine {
     this.level = await this.levels.load(levelId);
 
     if (!this.player) {
-      this.player = new Player({ x: 0, y: 0, config: GAME_CONFIG.player });
+      this.player = new Player({ x: 0, y: 0, config: GAME_CONFIG.player, assetManager: this.assets });
     }
 
     const spawn = spawnOverride || this.level.spawn;
