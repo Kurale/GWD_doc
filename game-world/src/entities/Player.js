@@ -19,17 +19,17 @@ export class Player extends Entity {
     this.facing = { x: 1, y: 0 };
     this.isMoving = false;
 
-    // Animation setup
+    // Animation setup - now uses tileset names directly
     this.animationConfig = {
-      idle: { frames: ['standStill'] },
-      right: { frames: ['Right'] },
-      left: { frames: ['Left'] },
-      down: { frames: ['OnDown'] },
-      up: { frames: ['FromUp'] },
-      downRight: { frames: ['DownRight'] },
-      downLeft: { frames: ['DownLeft'] },
-      upRight: { frames: ['TopRight'] },
-      upLeft: { frames: ['TopLeft'] }
+      idle: 'standStill',
+      right: 'Right',
+      left: 'Right',  // Use Right tileset and flip horizontally
+      down: 'OnDown',
+      up: 'FromUp',
+      downRight: 'DownRight',
+      downLeft: 'DownRight',  // Use DownRight and flip horizontally
+      upRight: 'TopRight',
+      upLeft: 'TopRight'  // Use TopRight and flip horizontally
     };
     this.animator = new SpriteAnimator(assetManager, this.animationConfig);
   }
@@ -53,6 +53,15 @@ export class Player extends Entity {
 
       this.updateAnimation(normX, normY);
     } else {
+      // Quick deceleration when not moving
+      const stopSpeed = 20; // Quick stop factor
+      this.velocity.x *= Math.pow(0.01, dt);
+      this.velocity.y *= Math.pow(0.01, dt);
+
+      // Snap to zero when very slow
+      if (Math.abs(this.velocity.x) < 1) this.velocity.x = 0;
+      if (Math.abs(this.velocity.y) < 1) this.velocity.y = 0;
+
       this.animator.setAnimation('idle');
     }
 
@@ -92,7 +101,9 @@ export class Player extends Entity {
     const screenX = this.position.x - camera.x;
     const screenY = this.position.y - camera.y;
 
-    const isFlipped = this.animator.currentAnimation === 'left';
+    const isFlipped = this.animator.currentAnimation === 'left' ||
+                      this.animator.currentAnimation === 'downLeft' ||
+                      this.animator.currentAnimation === 'upLeft';
 
     ctx.save();
     if (isFlipped) {

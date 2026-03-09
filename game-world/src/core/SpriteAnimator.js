@@ -5,7 +5,6 @@ export class SpriteAnimator {
     this.currentAnimation = 'idle';
     this.frameIndex = 0;
     this.frameTimer = 0;
-    this.frameDuration = 150; // ms per frame
   }
 
   setAnimation(name) {
@@ -17,37 +16,58 @@ export class SpriteAnimator {
   }
 
   update(dt) {
-    const anim = this.animations[this.currentAnimation];
-    if (!anim || !anim.frames || anim.frames.length <= 1) {
+    const animName = this.animations[this.currentAnimation];
+    if (!animName) {
       return;
     }
 
+    const tileset = this.assets.get(animName);
+    if (!tileset || !tileset.animation || tileset.animation.length <= 1) {
+      return;
+    }
+
+    const currentFrame = tileset.animation[this.frameIndex];
     this.frameTimer += dt * 1000;
-    if (this.frameTimer >= this.frameDuration) {
+
+    if (this.frameTimer >= currentFrame.duration) {
       this.frameTimer = 0;
-      this.frameIndex = (this.frameIndex + 1) % anim.frames.length;
+      this.frameIndex = (this.frameIndex + 1) % tileset.animation.length;
     }
   }
 
-  getCurrentFrame() {
-    const anim = this.animations[this.currentAnimation];
-    if (!anim || !anim.frames) {
+  getCurrentTileset() {
+    const animName = this.animations[this.currentAnimation];
+    if (!animName) {
       return null;
     }
-    return anim.frames[this.frameIndex];
+    return this.assets.get(animName);
+  }
+
+  getCurrentFrameIndex() {
+    const tileset = this.getCurrentTileset();
+    if (!tileset || !tileset.animation) {
+      return 0;
+    }
+    return tileset.animation[this.frameIndex]?.tileid || 0;
   }
 
   render(ctx, x, y, width, height) {
-    const frameKey = this.getCurrentFrame();
-    if (!frameKey) {
+    const tileset = this.getCurrentTileset();
+    if (!tileset || !tileset.image) {
       return;
     }
 
-    const img = this.assets.get(frameKey);
-    if (!img) {
-      return;
-    }
+    const frameIndex = this.getCurrentFrameIndex();
+    const { columns, tileWidth, tileHeight, image } = tileset;
 
-    ctx.drawImage(img, x, y, width, height);
+    // Calculate source position in tileset
+    const srcX = (frameIndex % columns) * tileWidth;
+    const srcY = Math.floor(frameIndex / columns) * tileHeight;
+
+    ctx.drawImage(
+      image,
+      srcX, srcY, tileWidth, tileHeight,  // Source
+      x, y, width, height                  // Destination
+    );
   }
 }
