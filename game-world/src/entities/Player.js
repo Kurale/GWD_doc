@@ -54,7 +54,7 @@ export class Player extends Entity {
       this.updateAnimation(normX, normY);
     } else {
       // Quick deceleration when not moving
-      const stopSpeed = 20; // Quick stop factor
+      const stopSpeed = 10; // Quick stop factor
       this.velocity.x *= Math.pow(0.01, dt);
       this.velocity.y *= Math.pow(0.01, dt);
 
