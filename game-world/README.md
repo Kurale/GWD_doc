@@ -65,6 +65,13 @@ Open `http://localhost:8080`.
 4. Convert exported tile layers to `tiles` 2D matrix expected by `LevelManager`.
 5. Add level entities in JSON under `entities` with `kind` field (`npc`, `collectible`, `portal`).
 
+
+## Graphics requirements
+
+Подробная памятка по требованиям к графике, форматам, атласам и budget:
+
+- `docs/GRAPHICS_REQUIREMENTS.md`
+
 ## Architectural overview
 
 - **Engine** — composition root and runtime orchestration.
@@ -90,6 +97,12 @@ Open `http://localhost:8080`.
    - Apply camera transform and scale.
    - Render visible tile region.
    - Render active entities.
+
+
+## Portal transition notes
+
+- `level-1 -> level-2 -> level-3` использует разнесённые spawn-позиции, чтобы после загрузки игрок не появлялся внутри обратного портала.
+- Если в Tiled вы меняете порталы, проверяйте: spawn не должен пересекаться с trigger-боксом любого portal.
 
 ## Extension guide
 

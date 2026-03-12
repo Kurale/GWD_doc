@@ -3,6 +3,7 @@ import { Player } from '../entities/Player.js';
 import { Camera } from './Camera.js';
 import { GameLoop } from './GameLoop.js';
 import { InputManager } from './InputManager.js';
+import { AssetManager } from './AssetManager.js';
 import { PhysicsSystem } from '../systems/PhysicsSystem.js';
 import { LevelManager } from '../systems/LevelManager.js';
 import { UISystem } from '../systems/UISystem.js';
@@ -14,6 +15,7 @@ export class Engine {
     this.ctx = canvas.getContext('2d');
     this.ctx.imageSmoothingEnabled = false;
 
+    this.assets = new AssetManager();
     this.input = new InputManager();
     this.physics = new PhysicsSystem({
       gravity: GAME_CONFIG.world.gravity,
@@ -31,6 +33,8 @@ export class Engine {
     this.player = null;
     this.level = null;
     this.coins = 0;
+    this.isLevelTransitioning = false;
+    this.portalCooldown = 0;
 
     this.camera = new Camera({
       width: this.logicalWidth,
@@ -44,19 +48,21 @@ export class Engine {
   }
 
   async init() {
+    await this.assets.preload();
     await this.loadLevel('level-1');
     this.loop.start();
   }
 
   async loadLevel(levelId, spawnOverride) {
+    if (this.isLevelTransitioning) {
+      return;
+    }
+
+    this.isLevelTransitioning = true;
     this.level = await this.levels.load(levelId);
 
     if (!this.player) {
-      this.player = new Player({
-        x: 0,
-        y: 0,
-        config: GAME_CONFIG.player,
-      });
+      this.player = new Player({ x: 0, y: 0, config: GAME_CONFIG.player, assetManager: this.assets });
     }
 
     const spawn = spawnOverride || this.level.spawn;
@@ -65,6 +71,14 @@ export class Engine {
     this.player.velocity.x = 0;
     this.player.velocity.y = 0;
 
+    this.camera.follow(
+      this.player,
+      this.level.width * this.level.tileSize,
+      this.level.height * this.level.tileSize,
+    );
+
+    this.portalCooldown = GAME_CONFIG.interaction.portalCooldown;
+    this.isLevelTransitioning = false;
     this.ui.setMessage(`Локация: ${this.level.name}`);
   }
 
@@ -79,6 +93,32 @@ export class Engine {
     this.camera.resize(this.logicalWidth, this.logicalHeight);
   }
 
+  findNearestNpc() {
+    const radius = GAME_CONFIG.interaction.npcRange;
+    const playerCenterX = this.player.position.x + this.player.width / 2;
+    const playerCenterY = this.player.position.y + this.player.height / 2;
+
+    let nearest = null;
+    let bestDistance = Number.POSITIVE_INFINITY;
+
+    for (const entity of this.level.entities) {
+      if (!entity.active || entity.type !== 'npc') {
+        continue;
+      }
+
+      const npcCenterX = entity.position.x + entity.width / 2;
+      const npcCenterY = entity.position.y + entity.height / 2;
+      const distance = Math.hypot(playerCenterX - npcCenterX, playerCenterY - npcCenterY);
+
+      if (distance <= radius && distance < bestDistance) {
+        nearest = entity;
+        bestDistance = distance;
+      }
+    }
+
+    return nearest;
+  }
+
   handleInteractions() {
     if (this.input.consumePressed('KeyQ')) {
       this.zoomIndex = (this.zoomIndex + 1) % GAME_CONFIG.world.zoomLevels.length;
@@ -87,32 +127,62 @@ export class Engine {
       this.ui.setMessage(`Масштаб: x${this.scale.toFixed(1)}`);
     }
 
-    if (!this.input.consumePressed('KeyE')) {
+    const nearestNpc = this.findNearestNpc();
+    if (nearestNpc) {
+      this.ui.setHint('E: взаимодействовать');
+    } else {
+      this.ui.setHint('');
+    }
+
+    if (!this.input.consumePressed('KeyE') || !nearestNpc) {
       return;
     }
 
-    const hitBox = {
-      x: this.player.position.x + this.player.facing.x * this.player.interactionRange,
-      y: this.player.position.y + this.player.facing.y * this.player.interactionRange,
-      width: this.player.width,
-      height: this.player.height,
-    };
-
-    const candidateNpc = this.level.entities.find((entity) => entity.type === 'npc' && PhysicsSystem.intersects(hitBox, entity.bounds));
-    if (candidateNpc) {
-      if (candidateNpc.role === 'pet-master' && !this.petSystem.isAdopted) {
-        this.petSystem.adoptAtPlayer(this.player);
-        this.ui.setMessage(`${candidateNpc.name}: ${candidateNpc.dialog} Питомец теперь с вами.`);
-      } else {
-        this.ui.setMessage(`${candidateNpc.name}: ${candidateNpc.dialog}`);
-      }
+    if (nearestNpc.role === 'pet-master' && !this.petSystem.isAdopted) {
+      this.petSystem.adoptAtPlayer(this.player);
+      this.ui.setMessage(`${nearestNpc.name}: ${nearestNpc.dialog} Питомец теперь с вами.`);
+      return;
     }
+
+    this.ui.setMessage(`${nearestNpc.name}: ${nearestNpc.dialog}`);
+  }
+
+  async handlePortalCollision() {
+    if (this.portalCooldown > 0 || this.isLevelTransitioning) {
+      return false;
+    }
+
+    const portalPadding = GAME_CONFIG.interaction.portalPadding;
+
+    for (const entity of this.level.entities) {
+      if (!entity.active || entity.type !== 'portal') {
+        continue;
+      }
+
+      const portalBounds = {
+        x: entity.position.x - portalPadding,
+        y: entity.position.y - portalPadding,
+        width: entity.width + portalPadding * 2,
+        height: entity.height + portalPadding * 2,
+      };
+
+      if (!PhysicsSystem.intersects(this.player.bounds, portalBounds)) {
+        continue;
+      }
+
+      await this.loadLevel(entity.targetLevel, entity.targetSpawn);
+      return true;
+    }
+
+    return false;
   }
 
   update(dt) {
     if (!this.level || !this.player) {
       return;
     }
+
+    this.portalCooldown = Math.max(0, this.portalCooldown - dt);
 
     this.handleInteractions();
 
@@ -129,12 +199,9 @@ export class Engine {
         this.coins += entity.value;
         this.ui.setMessage('Подобран ресурс.');
       }
-
-      if (entity.type === 'portal' && PhysicsSystem.intersects(this.player.bounds, entity.bounds)) {
-        this.loadLevel(entity.targetLevel, entity.targetSpawn);
-        return;
-      }
     }
+
+    this.handlePortalCollision();
 
     this.petSystem.update(dt, this.player);
 
